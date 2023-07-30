@@ -64,7 +64,7 @@ def get_default_browser_windows():
         return None
 
 default_browser = get_default_browser_windows()
-print("Navigateur par défaut sur Windows :", default_browser)
+print("Windows default web browser:", default_browser)
 
 def get_default_browser_macos():
     try:
@@ -76,7 +76,7 @@ def get_default_browser_macos():
         return None
 
 default_browser = get_default_browser_macos()
-print("Navigateur par défaut sur macOS :", default_browser)
+print("MacOS default web browser:", default_browser)
 
 def get_default_browser_linux():
     try:
@@ -87,7 +87,7 @@ def get_default_browser_linux():
         return None
 
 default_browser = get_default_browser_linux()
-print("Navigateur par défaut sur Linux :", default_browser)
+print("Linux default web browser:", default_browser)
 
 # Chek OS and default web browser
 def get_user_dependecie():
