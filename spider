@@ -1,0 +1,121 @@
+#! /usr/bin/env python3
+
+
+#https://python.plainenglish.io/web-scraping-images-with-python-and-selenium-792e452abd70
+#https://www.analyticsvidhya.com/blog/2020/08/web-scraping-selenium-with-python/
+#https://www.geeksforgeeks.org/image-scraping-with-python/
+#https://www.projectpro.io/article/python-libraries-for-web-scraping/625#mcetoc_1gb5hj7o818
+
+# First Error msg : ignore_proxy=self.options._ignore_local_proxy, AttributeError: 'str' object has no attribute '_ignore_local_proxy' Fix -> move chromedriver to my project file
+#https://stackoverflow.com/questions/76445754/selenium-with-python-attributeerror-str-object-has-no-attribute-ignore-loca
+#https://stackoverflow.com/questions/76477949/attribute-error-str-object-has-no-attribute-ignore-local-proxy-with-chrom
+
+import sys
+import subprocess
+import platform
+import os
+import time
+
+import requests 
+# Analize the HTML and export URL of images, Beautiful Soup(bs4) is a Python library for pulling data out of HTML and XML files. This module does not come built-in with Python. To install this type the below command in the terminal.
+from bs4 import BeautifulSoup 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import urllib
+from urllib.request import urlopen #
+import urllib.parse as urlparse # Alias
+
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.firefox.webdriver import WebDriver
+
+# Script to check the User OS
+def get_usr_os():
+    system = platform.system()
+
+    if system == "Windows":
+        return "Windows"
+    elif system == "Darwin":
+        return "Mac"
+    elif system == "Linux":
+        return "Linux"
+    else:
+        return "Unknown OS"
+
+user_os = get_usr_os()
+print("User OS: ", user_os)
+
+# Script to check the OS default web browser
+def get_default_browser_windows():
+    try:
+        import winreg
+    except ImportError:
+        return None
+
+    # PATH to default web browser
+    reg_path = r"SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path) as key:
+            prog_id, _ = winreg.QueryValueEx(key, "Progid")
+            return prog_id
+    except Exception:
+        return None
+
+default_browser = get_default_browser_windows()
+print("Navigateur par défaut sur Windows :", default_browser)
+
+def get_default_browser_macos():
+    try:
+        output =  subprocess.check_ouput(["default", "read", "-g", "com.apple.LaunchServices/com.apple.launchservices.secure"])
+        output_str = output.decode("utf-8")
+        browser_bundle_id = output_str.split('"LSHandlerRoleAll" = "')[1].split('";')[0]
+        return browser_bundle_id
+    except Exception:
+        return None
+
+default_browser = get_default_browser_macos()
+print("Navigateur par défaut sur macOS :", default_browser)
+
+def get_default_browser_linux():
+    try:
+        output = subprocess.check_output(["xdg-settings", "get", "default-web-browser"])
+        browser_desktop_file = output.decode("utf-8").strip()
+        return browser_desktop_file
+    except Exception:
+        return None
+
+default_browser = get_default_browser_linux()
+print("Navigateur par défaut sur Linux :", default_browser)
+
+# Chek OS and default web browser
+def get_user_dependecie():
+    if get_usr_os() == "Linux":
+        return get_default_browser_linux()
+    elif get_usr_os() == "Mac":
+        return get_default_browser_macos()
+    elif get_usr_os() == "Windows":
+        return get_default_browser_windows
+    else:
+        return None
+
+
+#Script for the images scrapper using selenium
+PATH = "/usr/bin/chromedriver"
+
+service = Service(executable_path=PATH)
+# FirefoxService = Service(executable_path=PATH)
+
+options = webdriver.ChromeOptions()
+# FirefoxOptions = webdriver.FirefoxOptions()
+
+driver = webdriver.Chrome(service=service, options=options)
+# driver = webdriver.Firefox(service=FirefoxService, options=FirefoxOptions)
+driver = webdriver.Chrome()
+
+URL = sys.argv[1]
+
+driver.get(URL)
+
+driver.close()
