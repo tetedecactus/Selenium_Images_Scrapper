@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-
+#https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.chrome.webdriver
 #https://python.plainenglish.io/web-scraping-images-with-python-and-selenium-792e452abd70
 #https://www.analyticsvidhya.com/blog/2020/08/web-scraping-selenium-with-python/
 #https://www.geeksforgeeks.org/image-scraping-with-python/
@@ -28,7 +28,7 @@ import urllib.parse as urlparse # Alias
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-# from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.webdriver import WebDriver
 
 # Script to check the User OS
 def get_usr_os():
@@ -102,20 +102,23 @@ def get_user_dependecie():
 
 
 #Script for the images scrapper using selenium
-PATH = "/usr/bin/chromedriver"
+PATH_chromedriver = "/usr/bin/chromedriver"
+PATH_firefoxdriver = "/usr/bin/geckodriver"
 
-service = Service(executable_path=PATH)
-# FirefoxService = Service(executable_path=PATH)
+service = Service(executable_path=PATH_chromedriver)
+FirefoxService = Service(executable_path=PATH_firefoxdriver)
 
 options = webdriver.ChromeOptions()
-# FirefoxOptions = webdriver.FirefoxOptions()
+FirefoxOptions = webdriver.FirefoxOptions()
 
-driver = webdriver.Chrome(service=service, options=options)
-# driver = webdriver.Firefox(service=FirefoxService, options=FirefoxOptions)
-driver = webdriver.Chrome()
+chrome_driver = webdriver.Chrome(service=service, options=options)
+firefox_driver = webdriver.Firefox(service=FirefoxService, options=FirefoxOptions)
+chrome_driver = webdriver.Chrome()
 
 URL = sys.argv[1]
 
-driver.get(URL)
+chrome_driver.get(URL)
+firefox_driver.get(URL)
 
-driver.close()
+chrome_driver.quit()
+firefox_driver.quit()
