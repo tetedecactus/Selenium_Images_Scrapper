@@ -14,14 +14,12 @@ import os
 import time
 
 import requests 
-# Analize the HTML and export URL of images, Beautiful Soup(bs4) is a Python library for pulling data out of HTML and XML files. This module does not come built-in with Python. To install this type the below command in the terminal.
-from bs4 import BeautifulSoup 
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import urllib
-from urllib.request import urlopen #
-import urllib.parse as urlparse # Alias
-
+from urllib.request import urlopen
+import urllib.parse as urlparse
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -85,70 +83,94 @@ def get_default_browser_linux():
 
 default_browser = get_default_browser_linux()
 print("Linux default web browser:", default_browser)
+URL = sys.argv[1]
+def selenium_chrome():
+    PATH_chromedriver = "/usr/bin/chromedriver"
+    chrome_service = Service(executable_path=PATH_chromedriver)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    chrome_driver = webdriver.Chrome()
+    chrome_driver.get(URL)
+    chrome_driver.quit()
+
 
 # Chek OS and default web browser
 def get_user_dependecie():
     if get_usr_os() == "Linux":
-        return get_default_browser_linux()
+        if get_default_browser_linux() != "Chrome":
+            selenium_chrome()
+        # elif get_default_browser_linux() == "brave-browser.desktop":
+        #     selenium_brave()
+        else:
+            selenium_chrome()
+        # return get_default_browser_linux()
     elif get_usr_os() == "Mac":
+        # if get_default_browser_macos() == "Chrome":
+        # selenium_mac_chrome()
         return get_default_browser_macos()
     elif get_usr_os() == "Windows":
+        # if get_default_browser_windows() == "Chrome":
+        # selenium_windows_chrome()
         return get_default_browser_windows
     else:
         return None
 
-
+get_user_dependecie()
 # Script for the images scrapper using selenium
 URL = sys.argv[1]
 
 # Launch with Chrome web browser
-# PATH_chromedriver = "/usr/bin/chromedriver"
-# chrome_service = Service(executable_path=PATH_chromedriver)
-# chrome_options = webdriver.ChromeOptions()
-# chrome_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-# chrome_driver = webdriver.Chrome()
-# chrome_driver.get(URL)
-# chrome_driver.quit()
+def selenium_chrome():
+    PATH_chromedriver = "/usr/bin/chromedriver"
+    chrome_service = Service(executable_path=PATH_chromedriver)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    chrome_driver = webdriver.Chrome()
+    chrome_driver.get(URL)
+    chrome_driver.quit()
 
 # Launch with Firefox web browser
-# PATH_firefoxdriver = "/usr/bin/geckodriver"
-# firefox_service = Service(executable_path=PATH_firefoxdriver)
-# firefox_options = webdriver.FirefoxOptions()
-# firefox_driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
-# firefox_driver.get(URL)
-# firefox_driver.quit()
+def selenium_firefox():
+    PATH_firefoxdriver = "/usr/bin/geckodriver"
+    firefox_service = Service(executable_path=PATH_firefoxdriver)
+    firefox_options = webdriver.FirefoxOptions()
+    firefox_driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
+    firefox_driver.get(URL)
+    firefox_driver.quit()
 
 #Launch with Brave web browser
-# PATH_brave = "/usr/bin/brave-browser"
-# PATH_bravedriver = "/usr/bin/chromedriver"
-# brave_service = Service(executable_path=PATH_bravedriver)
-# brave_option = webdriver.ChromeOptions()
-# brave_option.binary_location = PATH_brave
-# brave_driver = webdriver.Chrome(service=brave_service, options=brave_option)
-# brave_driver.get(URL)
-# brave_driver.quit()
+def selenium_brave():
+    PATH_brave = "/usr/bin/brave-browser"
+    PATH_bravedriver = "/usr/bin/chromedriver"
+    brave_service = Service(executable_path=PATH_bravedriver)
+    brave_option = webdriver.ChromeOptions()
+    brave_option.binary_location = PATH_brave
+    brave_driver = webdriver.Chrome(service=brave_service, options=brave_option)
+    brave_driver.get(URL)
+    brave_driver.quit()
 
 # Launch with Opera web browser
-PATH_opera = "/var/lib/snapd/snap/bin/opera"
-PATH_operadriver = "/usr/bin/chromedriver"
-# PATH_operadriver = "/usr/bin/operadriver/operadriver_linux64"
-opera_service = Service(executable_path=PATH_operadriver)
-opera_option = webdriver.ChromeOptions()
-# opera_option = webdriver.OperaOptions()
-opera_option.binary_location = PATH_opera
-opera_driver = webdriver.Chrome(service=opera_service, options=opera_option)
-# opera_driver = webdriver.Opera(service=opera_service, options=opera_option)
-# opera_driver = webdriver.Chrome(options=opera_option)
-
-opera_driver.get(URL)
-opera_driver.quit()
+# def selenium_opera():
+    # PATH_opera = "/var/lib/snapd/snap/bin/opera"
+    # PATH_operadriver = "/usr/bin/chromedriver"
+    # # PATH_operadriver = "/usr/bin/operadriver/operadriver_linux64"
+    # opera_service = Service(executable_path=PATH_operadriver)
+    # opera_option = webdriver.ChromeOptions()
+    # # opera_option = webdriver.OperaOptions()
+    # opera_option.binary_location = PATH_opera
+    # opera_driver = webdriver.Chrome(service=opera_service, options=opera_option)
+    # # opera_driver = webdriver.Opera(service=opera_service, options=opera_option)
+    # # opera_driver = webdriver.Chrome(options=opera_option)
+    # opera_driver.get(URL)
+    # opera_driver.quit()
 
 # Launch with Microsoft Edge web browser
-# PATH_edge = "/usr/bin/microsoft-edge"
-# PATH_edgedriver = "/usr/bin/edgedriver"
-# edge_service = Service(executable_path=PATH_edgedriver)
-# edge_option = webdriver.EdgeOptions()
-# edge_option.binary_location = PATH_edge
-# edge_driver = webdriver.Edge(service=edge_service, options=edge_option)
-# edge_driver.get(URL)
-# edge_driver.quit()
+def selenium_edge():
+    PATH_edge = "/usr/bin/microsoft-edge"
+    PATH_edgedriver = "/usr/bin/edgedriver"
+    edge_service = Service(executable_path=PATH_edgedriver)
+    edge_option = webdriver.EdgeOptions()
+    edge_option.binary_location = PATH_edge
+    edge_driver = webdriver.Edge(service=edge_service, options=edge_option)
+    edge_driver.get(URL)
+    edge_driver.quit()
