@@ -1,0 +1,14 @@
+{
+    "mac": {
+        "dependency1": "Chromedriver_mac",
+        "dependency2": "Chrome_mac"
+    },
+    "windows": {
+        "dependency1": "Chromedriver_windows",
+        "dependency2": "Chrome_windows"
+    },
+    "linux": {
+        "dependency1": "linux_chromedriver",
+        "dependency2": "linux_chrome"
+    }
+}
