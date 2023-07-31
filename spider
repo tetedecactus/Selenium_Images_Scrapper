@@ -1,14 +1,11 @@
 #! /usr/bin/env python3
 
+#https://www.selenium.dev/documentation/webdriver/browsers/chrome/
 #https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.chrome.webdriver
 #https://python.plainenglish.io/web-scraping-images-with-python-and-selenium-792e452abd70
 #https://www.analyticsvidhya.com/blog/2020/08/web-scraping-selenium-with-python/
 #https://www.geeksforgeeks.org/image-scraping-with-python/
 #https://www.projectpro.io/article/python-libraries-for-web-scraping/625#mcetoc_1gb5hj7o818
-
-# First Error msg : ignore_proxy=self.options._ignore_local_proxy, AttributeError: 'str' object has no attribute '_ignore_local_proxy' Fix -> move chromedriver to my project file
-#https://stackoverflow.com/questions/76445754/selenium-with-python-attributeerror-str-object-has-no-attribute-ignore-loca
-#https://stackoverflow.com/questions/76477949/attribute-error-str-object-has-no-attribute-ignore-local-proxy-with-chrom
 
 import sys
 import subprocess
@@ -101,24 +98,57 @@ def get_user_dependecie():
         return None
 
 
-#Script for the images scrapper using selenium
-PATH_chromedriver = "/usr/bin/chromedriver"
-PATH_firefoxdriver = "/usr/bin/geckodriver"
-
-service = Service(executable_path=PATH_chromedriver)
-FirefoxService = Service(executable_path=PATH_firefoxdriver)
-
-options = webdriver.ChromeOptions()
-FirefoxOptions = webdriver.FirefoxOptions()
-
-chrome_driver = webdriver.Chrome(service=service, options=options)
-firefox_driver = webdriver.Firefox(service=FirefoxService, options=FirefoxOptions)
-chrome_driver = webdriver.Chrome()
-
+# Script for the images scrapper using selenium
 URL = sys.argv[1]
 
-chrome_driver.get(URL)
-firefox_driver.get(URL)
+# Launch with Chrome web browser
+# PATH_chromedriver = "/usr/bin/chromedriver"
+# chrome_service = Service(executable_path=PATH_chromedriver)
+# chrome_options = webdriver.ChromeOptions()
+# chrome_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+# chrome_driver = webdriver.Chrome()
+# chrome_driver.get(URL)
+# chrome_driver.quit()
 
-chrome_driver.quit()
-firefox_driver.quit()
+# Launch with Firefox web browser
+# PATH_firefoxdriver = "/usr/bin/geckodriver"
+# firefox_service = Service(executable_path=PATH_firefoxdriver)
+# firefox_options = webdriver.FirefoxOptions()
+# firefox_driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
+# firefox_driver.get(URL)
+# firefox_driver.quit()
+
+#Launch with Brave web browser
+# PATH_brave = "/usr/bin/brave-browser"
+# PATH_bravedriver = "/usr/bin/chromedriver"
+# brave_service = Service(executable_path=PATH_bravedriver)
+# brave_option = webdriver.ChromeOptions()
+# brave_option.binary_location = PATH_brave
+# brave_driver = webdriver.Chrome(service=brave_service, options=brave_option)
+# brave_driver.get(URL)
+# brave_driver.quit()
+
+# Launch with Opera web browser
+PATH_opera = "/var/lib/snapd/snap/bin/opera"
+PATH_operadriver = "/usr/bin/chromedriver"
+# PATH_operadriver = "/usr/bin/operadriver/operadriver_linux64"
+opera_service = Service(executable_path=PATH_operadriver)
+opera_option = webdriver.ChromeOptions()
+# opera_option = webdriver.OperaOptions()
+opera_option.binary_location = PATH_opera
+opera_driver = webdriver.Chrome(service=opera_service, options=opera_option)
+# opera_driver = webdriver.Opera(service=opera_service, options=opera_option)
+# opera_driver = webdriver.Chrome(options=opera_option)
+
+opera_driver.get(URL)
+opera_driver.quit()
+
+# Launch with Microsoft Edge web browser
+# PATH_edge = "/usr/bin/microsoft-edge"
+# PATH_edgedriver = "/usr/bin/edgedriver"
+# edge_service = Service(executable_path=PATH_edgedriver)
+# edge_option = webdriver.EdgeOptions()
+# edge_option.binary_location = PATH_edge
+# edge_driver = webdriver.Edge(service=edge_service, options=edge_option)
+# edge_driver.get(URL)
+# edge_driver.quit()
