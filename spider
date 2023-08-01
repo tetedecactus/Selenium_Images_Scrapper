@@ -7,12 +7,6 @@
 #https://www.geeksforgeeks.org/image-scraping-with-python/
 #https://www.projectpro.io/article/python-libraries-for-web-scraping/625#mcetoc_1gb5hj7o818
 
-import sys
-import subprocess
-import platform
-import os
-import time
-
 # import requests 
 # from bs4 import BeautifulSoup
 # from selenium import webdriver
@@ -20,6 +14,13 @@ import time
 # import urllib
 # from urllib.request import urlopen
 # import urllib.parse as urlparse
+
+import sys
+import subprocess
+import platform
+import os
+import shutil
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -45,31 +46,64 @@ def get_usr_os():
     else:
         print("Unknown OS: Program must by launch by: [Windows || MacOS || Linux]")
         exit()
-        # return "Unknown OS"
 
 usr_os = get_usr_os()
-# print("User OS: ", user_os)
+
+# Chek if Chrome is installed
+def is_chrome_installed():
+    system = platform.system()
+    if system == "Windows":
+        try:
+            subprocess.check_output(['where', 'chrome'], stderr=subprocess.STDOUT)
+            return True
+        except subprocess.CalledProcessError:
+            return False
+    elif system == "Darwin":
+        return shutil.which('google-chrome') is not None
+    elif system == "Linux":
+        return shutil.which('google-chrome') is not None or shutil.which('google-chrome-stable') is not None
+    else:
+        return False
+
+# Chek if ChromeDriver is installed
+def is_chromedriver_installed():
+    system = platform.system()
+    if system == "Windows":
+        try:
+            subprocess.check_output(['where', 'chromedriver'], stderr=subprocess. STDOUT)
+            return True
+        except subprocess.CalledProcessError:
+            return False
+    elif system == "Darwin":
+        return shutil.which('chromedriver') is not None
+    elif system == "Linux":
+        return shutil.which('chromedriver') is not None
+    else:
+        return False
 
 # Chek OS and default web browser
 def get_user_dependecie():
     if usr_os == "Linux":
-        if get_default_browser_linux() != "Chrome":
-            selenium_chrome()
-        # elif get_default_browser_linux() == "brave-browser.desktop":
-        #     selenium_brave()
+        if is_chrome_installed() == True and is_chromedriver_installed() == True:
+            return [usr_os, True]
         else:
-            selenium_chrome()
-        # return get_default_browser_linux()
+            print('Please read the README file to install Chrome or Chrome driver on Linux')
+            exit()
     elif usr_os == "Mac":
-        # if get_default_browser_macos() == "Chrome":
-        # selenium_mac_chrome()
+        if is_chrome_installed() == True and is_chromedriver_installed() == True:
+            return [usr_os, True] 
+        else:
+            print('Please read the README file to install Chrome or Chrome driver on Linux')
+            exit()
         return get_default_browser_macos()
     elif usr_os == "Windows":
-        # if get_default_browser_windows() == "Chrome":
-        # selenium_windows_chrome()
-        return get_default_browser_windows
+        if is_chrome_installed() == True and is_chromedriver_installed() == True:
+            return [usr_os, True]
+        else:
+            print('Please read the README file to install Chrome or Chrome driver on Linux')
+            exit()
     else:
-        return None
+        exit(1)
 
 # Check Windows default web browser
 def get_default_browser_windows():
@@ -88,9 +122,6 @@ def get_default_browser_windows():
     except Exception:
         return None
 
-# default_browser = get_default_browser_windows()
-# print("Windows default web browser:", default_browser)
-
 # Check MacOS default web browser
 def get_default_browser_macos():
     try:
@@ -101,9 +132,6 @@ def get_default_browser_macos():
     except Exception:
         return None
 
-# default_browser = get_default_browser_macos()
-# print("MacOS default web browser:", default_browser)
-
 # Check Linux default web browser
 def get_default_browser_linux():
     try:
@@ -112,10 +140,6 @@ def get_default_browser_linux():
         return browser_desktop_file
     except Exception:
         return None
-
-# default_browser = get_default_browser_linux()
-# print("Linux default web browser:", default_browser)
-
 
 # must do a default function to make chrome and chromedriver, who could be change 
 default_dependencies = ["Chrome", "ChromeDriver"]
@@ -158,21 +182,6 @@ def selenium_chrome():
 #     brave_driver.get(URL)
 #     brave_driver.quit()
 
-# Launch with Opera web browser
-# def selenium_opera():
-    # PATH_opera = "/var/lib/snapd/snap/bin/opera"
-    # PATH_operadriver = "/usr/bin/chromedriver"
-    # # PATH_operadriver = "/usr/bin/operadriver/operadriver_linux64"
-    # opera_service = Service(executable_path=PATH_operadriver)
-    # opera_option = webdriver.ChromeOptions()
-    # # opera_option = webdriver.OperaOptions()
-    # opera_option.binary_location = PATH_opera
-    # opera_driver = webdriver.Chrome(service=opera_service, options=opera_option)
-    # # opera_driver = webdriver.Opera(service=opera_service, options=opera_option)
-    # # opera_driver = webdriver.Chrome(options=opera_option)
-    # opera_driver.get(URL)
-    # opera_driver.quit()
-
 # Launch with Microsoft Edge web browser
 # def selenium_edge():
 #     PATH_edge = "/usr/bin/microsoft-edge"
@@ -192,4 +201,13 @@ def selenium_chrome():
 # /============== SELENIUM USING WINDOWS ============================
 # /===================================================
 
-get_user_dependecie()
+# Put in result a list, ["User Os" True | False]
+result = get_user_dependecie()
+
+# Check if the Os got Chrome and Chromedriver installed
+usr_os, is_true = result
+
+if usr_os == "Linux" and is_true:
+    selenium_chrome()
+else:
+    exit()
