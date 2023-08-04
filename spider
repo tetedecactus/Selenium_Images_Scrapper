@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 
+# /======================= RELATIVE LINKS ===================================
 #https://www.selenium.dev/documentation/webdriver/browsers/chrome/
 #https://selenium-python.readthedocs.io/api.html#module-selenium.webdriver.chrome.webdriver
 #https://python.plainenglish.io/web-scraping-images-with-python-and-selenium-792e452abd70
@@ -7,31 +8,26 @@
 #https://www.geeksforgeeks.org/image-scraping-with-python/
 #https://www.projectpro.io/article/python-libraries-for-web-scraping/625#mcetoc_1gb5hj7o818
 
-# import requests 
-# from bs4 import BeautifulSoup
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# import urllib
-# from urllib.request import urlopen
-# import urllib.parse as urlparse
-
-import sys
-import subprocess
-import platform
 import os
-import shutil
+import sys
 import time
+import shutil
+import urllib
+import requests 
+import platform
+import subprocess
 
 from selenium import webdriver
+import urllib.parse as urlparse
+from urllib.request import urlopen
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.firefox.webdriver import WebDriver
 
-# Chek argv -> ,.spider https://{LINK} -[rpg]
-if len(sys.argv) != 2:
-    print("Program Must be launch by : ./spider https://[YOURLINK]")
-    exit()
-else:
-    URL = sys.argv[1]
+
+# /===================== SET UP FUNCTION START ========================
 
 # Script to check the User OS
 def get_usr_os():
@@ -155,11 +151,45 @@ default_dependencies = ["Chrome", "ChromeDriver"]
 # Launch with Chrome web browser
 def selenium_chrome():
     PATH_chromedriver = "/usr/bin/chromedriver"
+
     chrome_service = Service(executable_path=PATH_chromedriver)
+
     chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+
     chrome_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-    chrome_driver = webdriver.Chrome()
+    chrome_driver = webdriver.Chrome() 
     chrome_driver.get(URL)
+    chrome_driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
+
+    time.sleep(5)
+
+    imgResults = chrome_driver.find_elements(By.TAG_NAME, "img")
+
+    # Access and store the src list of image URLs.
+    src = []
+    for img in imgResults:
+        src.append(img.get_attribute('src'))
+
+    # Create the 'sample_data' directory if it doesn't exist
+    if not os.path.exists('sample_data'):
+        os.makedirs('sample_data')
+
+    # Retrieve and download the images.
+    for i in range(len(src)):
+        try:
+            urllib.request.urlretrieve(str(src[i]), f"sample_data/img{i}.jpg")
+        except urllib.error.HTTPError as e:
+            print(f"Failed to download image {i} (HTTPError): {e}")
+        except urllib.error.URLError as e:
+            print(f"Failed to download image {i} (URLError): {e}")
+        except socket.timeout as e:
+            print(f"Failed to download image {i} (Timeout): {e}")
+        except Exception as e:
+            print(f"Failed to download image {i}: {e}")
+
     chrome_driver.quit()
 
 # Launch with Firefox web browser
@@ -200,6 +230,17 @@ def selenium_chrome():
 
 # /============== SELENIUM USING WINDOWS ============================
 # /===================================================
+
+# /===================== SET UP FUNCTION END ========================
+
+# /===================== PROGRAM START ==============================
+
+# Chek argv -> ./spider https://{LINK} -[rpg]
+if len(sys.argv) != 2:
+    print("Program Must be launch by : ./spider https://[YOURLINK]")
+    exit()
+else:
+    URL = sys.argv[1]
 
 # Put in result a list, ["User Os" True | False]
 result = get_user_dependecie()
