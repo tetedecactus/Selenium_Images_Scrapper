@@ -174,8 +174,8 @@ def selenium_chrome():
         src.append(img.get_attribute('src'))
 
     # Create the 'sample_data' directory if it doesn't exist
-    if not os.path.exists('sample_data'):
-        os.makedirs('sample_data')
+    if not os.path.exists('data'):
+        os.makedirs('data')
 
     # Retrieve and download the images.
     for i in range(len(src)):
